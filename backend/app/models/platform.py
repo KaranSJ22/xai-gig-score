@@ -27,41 +27,43 @@ class PlatformData(Base):
 
     platform_name = Column(String(50), nullable=False)
 
-    # Basic borrower / platform context
-    age = Column(Float, nullable=False)
-    platform_tenure = Column(Float, nullable=False)
-    platform_count = Column(Float, nullable=False, default=1)
+    # Work & Activity Profile
+    active_days_30d = Column(Float, nullable=False)
+    online_hours_30d = Column(Float, nullable=False)
+    avg_hours_per_active_day = Column(Float, nullable=False)
+    acceptance_rate = Column(Float, nullable=False)
+    cancellation_rate = Column(Float, nullable=False)
+    peak_hour_share = Column(Float, nullable=False)
 
-    # Work activity signals
-    avg_active_days = Column(Float, nullable=False)
-    avg_hours = Column(Float, nullable=False)
-    task_completion_rate = Column(Float, nullable=False)
+    # Performance Profile
     avg_rating = Column(Float, nullable=False)
+    rating_count = Column(Integer, nullable=False)
+    rating_std = Column(Float, nullable=False)
+    complaints_30d = Column(Integer, nullable=False)
+
+    # Earnings Profile
+    gross_earnings_30d = Column(Float, nullable=False)
+    net_payout_30d = Column(Float, nullable=False)
+    weekly_earnings_std = Column(Float, nullable=False)
+    incentive_share = Column(Float, nullable=False)
+
+    # Consistency Profile
+    login_days_30d = Column(Integer, nullable=False)
+    avg_session_length = Column(Float, nullable=False)
+    inactivity_gap_days_max = Column(Integer, nullable=False)
+
+    # Risk & Compliance Profile
+    kyc_verified = Column(Boolean, nullable=False, default=True)
+    account_suspensions_12m = Column(Integer, nullable=False, default=0)
+    policy_violations_12m = Column(Integer, nullable=False, default=0)
+    fraud_flag = Column(Boolean, nullable=False, default=False)
+
+    # Derived Features
     activity_stability = Column(Float, nullable=False)
-
-    # Income and cash-flow signals
-    wallet_txn_freq = Column(Float, nullable=False)
-    inward_txn_freq = Column(Float, nullable=False)
-    avg_income = Column(Float, nullable=False)
-    income_volatility = Column(Float, nullable=False)
-    income_growth = Column(Float, nullable=False)
-    income_consistency_score = Column(Float, nullable=False)
-
-    # Optional encoded trend:
-    # -1 = decreasing, 0 = stable, 1 = increasing
-    monthly_income_trend = Column(Float, nullable=False)
-
-    # Financial discipline / resilience signals
-    savings_ratio = Column(Float, nullable=False)
-    avg_balance = Column(Float, nullable=False)
-    has_insurance = Column(Boolean, nullable=False, default=False)
-    emergency_buffer = Column(Boolean, nullable=False, default=False)
-
-    # Non-credit payment behavior signals
-    utility_delay_score = Column(Float, nullable=False)
-    recent_missed_rent_3m = Column(Float, nullable=False)
-    rent_consistency_ratio = Column(Float, nullable=False)
-    non_credit_payment_delay_score = Column(Float, nullable=False)
+    earnings_per_hour = Column(Float, nullable=False)
+    volatility_ratio = Column(Float, nullable=False)
+    reliability_score = Column(Float, nullable=False)
+    discipline_score = Column(Float, nullable=False)
 
     # Data quality signal
     data_completeness_score = Column(Float, nullable=False, default=1.0)

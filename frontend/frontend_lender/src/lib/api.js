@@ -4,7 +4,7 @@ const BASE_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8001';
 
 export async function apiRequest(endpoint, options = {}) {
   const token = getToken();
-
+  
   const headers = {
     'Content-Type': 'application/json',
     ...options.headers,
@@ -14,31 +14,20 @@ export async function apiRequest(endpoint, options = {}) {
     headers['Authorization'] = `Bearer ${token}`;
   }
 
-  const config = {
+  const response = await fetch(`${BASE_URL}${endpoint}`, {
     ...options,
     headers,
-  };
+  });
 
-  try {
-    const response = await fetch(`${BASE_URL}${endpoint}`, config);
+  const data = await response.json();
 
+  if (!response.ok) {
     if (response.status === 401) {
+      localStorage.removeItem('lender_token');
       window.location.href = '/login';
     }
-
-    if (response.status === 204) {
-      return null;
-    }
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.detail || 'Something went wrong');
-    }
-
-    return data;
-  } catch (error) {
-    console.error('API Request Error:', error);
-    throw error;
+    throw new Error(data.detail || 'Something went wrong');
   }
+
+  return data;
 }

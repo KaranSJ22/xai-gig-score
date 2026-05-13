@@ -95,6 +95,10 @@ def apply_for_loan_scheme(
     db.commit()
     db.refresh(application)
 
+    # Attach names for Pydantic response
+    application.scheme_name = scheme.scheme_name
+    application.lender_name = scheme.lender.name if scheme.lender else None
+
     return application
 
 
@@ -109,5 +113,9 @@ def list_my_applications(
         .order_by(LoanApplication.created_at.desc())
         .all()
     )
+
+    for app in applications:
+        app.scheme_name = app.scheme.scheme_name if app.scheme else None
+        app.lender_name = app.lender.name if app.lender else None
 
     return applications

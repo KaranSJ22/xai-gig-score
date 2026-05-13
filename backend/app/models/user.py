@@ -64,12 +64,6 @@ class User(Base):
         cascade="all, delete-orphan",
     )
 
-    borrower_applications = relationship(
-        "LoanApplication",
-        foreign_keys="LoanApplication.borrower_id",
-        back_populates="borrower",
-        cascade="all, delete-orphan",
-    )
 
     lender_applications = relationship(
         "LoanApplication",

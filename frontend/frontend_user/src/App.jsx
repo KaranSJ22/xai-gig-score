@@ -11,6 +11,8 @@ import PANPage from './pages/PAN';
 import ConnectPage from './pages/Connect';
 import PredictPage from './pages/Predict';
 import LoansPage from './pages/Loans';
+import SettingsPage from './pages/Settings';
+import HelpPage from './pages/Help';
 
 export default function App() {
   return (
@@ -59,6 +61,24 @@ export default function App() {
           element={
             <AuthGuard>
               <LoansPage />
+            </AuthGuard>
+          } 
+        />
+
+        <Route 
+          path="/settings" 
+          element={
+            <AuthGuard>
+              <SettingsPage />
+            </AuthGuard>
+          } 
+        />
+
+        <Route 
+          path="/help" 
+          element={
+            <AuthGuard>
+              <HelpPage />
             </AuthGuard>
           } 
         />

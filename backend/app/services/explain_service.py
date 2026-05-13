@@ -17,149 +17,173 @@ _features = None
 
 
 FEATURE_METADATA = {
-    "age": {
-        "label": "Age",
-        "category": "Profile",
-        "risk_increasing": "Age profile slightly increased predicted repayment risk.",
-        "risk_reducing": "Age profile slightly reduced predicted repayment risk.",
+    "active_days_30d": {
+        "label": "Active Days",
+        "category": "Activity",
+        "risk_increasing": "Your {val} active days in the last month is below the optimal threshold, increasing predicted risk.",
+        "risk_reducing": "Consistent engagement with {val} active days in the last month improved your reliability profile.",
     },
-    "platform_tenure": {
-        "label": "Platform Tenure",
-        "category": "Work Stability",
-        "risk_increasing": "Shorter platform tenure increased predicted repayment risk.",
-        "risk_reducing": "Longer platform tenure improved work stability and reduced predicted risk.",
+    "online_hours_30d": {
+        "label": "Online Hours",
+        "category": "Activity",
+        "risk_increasing": "Total online time of {val} hours suggests limited earning capacity, affecting your score.",
+        "risk_reducing": "High platform commitment with {val} online hours indicates strong earning potential.",
     },
-    "platform_count": {
-        "label": "Connected Platforms",
-        "category": "Work Diversity",
-        "risk_increasing": "Limited platform diversity increased predicted risk.",
-        "risk_reducing": "Multiple connected platforms improved income source diversity and reduced predicted risk.",
+    "avg_hours_per_active_day": {
+        "label": "Daily Work Intensity",
+        "category": "Activity",
+        "risk_increasing": "Your average of {val} hours per day indicates irregular work patterns.",
+        "risk_reducing": "Steady daily intensity of {val} hours demonstrates professional performance stability.",
     },
-    "avg_active_days": {
-        "label": "Active Working Days",
-        "category": "Work Activity",
-        "risk_increasing": "Lower active working days reduced income reliability.",
-        "risk_reducing": "Consistent active working days improved income reliability.",
+    "acceptance_rate": {
+        "label": "Job Acceptance Rate",
+        "category": "Reliability",
+        "risk_increasing": "An acceptance rate of {val}% is lower than required, suggesting operational risk.",
+        "risk_reducing": "Strong reliability demonstrated by a {val}% job acceptance rate.",
     },
-    "avg_hours": {
-        "label": "Average Working Hours",
-        "category": "Work Activity",
-        "risk_increasing": "Lower average working hours reduced earning consistency.",
-        "risk_reducing": "Consistent working hours improved earning stability.",
+    "cancellation_rate": {
+        "label": "Order Cancellation Rate",
+        "category": "Reliability",
+        "risk_increasing": "Frequent cancellations ({val}%) weakened your platform trust signals.",
+        "risk_reducing": "Excellent professional reliability with a low cancellation rate of {val}%.",
     },
-    "task_completion_rate": {
-        "label": "Task Completion Rate",
-        "category": "Work Reliability",
-        "risk_increasing": "Lower task completion rate reduced platform reliability.",
-        "risk_reducing": "High task completion rate improved work reliability and reduced predicted risk.",
+    "peak_hour_share": {
+        "label": "Peak Hour Performance",
+        "category": "Activity",
+        "risk_increasing": "Limited participation ({val}%) during peak hours reduced your efficiency score.",
+        "risk_reducing": "Optimal time management with {val}% share of work during peak demand hours.",
     },
     "avg_rating": {
         "label": "Platform Rating",
-        "category": "Work Reliability",
-        "risk_increasing": "Lower platform rating increased predicted risk.",
-        "risk_reducing": "Good platform rating improved trust and reduced predicted risk.",
+        "category": "Performance",
+        "risk_increasing": "Your average rating of {val}/5.0 is below the elite threshold, increasing risk.",
+        "risk_reducing": "Outstanding service quality reflected in your {val}/5.0 average rating.",
+    },
+    "rating_count": {
+        "label": "Total Feedback",
+        "category": "Performance",
+        "risk_increasing": "Limited feedback history ({val} ratings) reduces statistical confidence in your score.",
+        "risk_reducing": "High volume of {val} ratings indicates an established and trusted performance history.",
+    },
+    "rating_std": {
+        "label": "Rating Consistency",
+        "category": "Performance",
+        "risk_increasing": "High variance ({val}) in customer ratings suggests inconsistent service quality.",
+        "risk_reducing": "Low rating variance of {val} demonstrates highly predictable and stable performance.",
+    },
+    "complaints_30d": {
+        "label": "Customer Complaints",
+        "category": "Performance",
+        "risk_increasing": "Recent customer complaints ({val} in 30 days) significantly increased behavioral risk.",
+        "risk_reducing": "Clean behavioral record with {val} complaints improved your credit standing.",
+    },
+    "gross_earnings_30d": {
+        "label": "Gross Earnings",
+        "category": "Earnings",
+        "risk_increasing": "Gross earnings of ₹{val} in the last month suggest limited repayment capacity.",
+        "risk_reducing": "Healthy financial resilience shown by ₹{val} in monthly gross earnings.",
+    },
+    "net_payout_30d": {
+        "label": "Net Payout",
+        "category": "Earnings",
+        "risk_increasing": "Net payout of ₹{val} after deductions impacted your disposable income score.",
+        "risk_reducing": "Stable net payout of ₹{val} improves predicted monthly cash flow.",
+    },
+    "weekly_earnings_std": {
+        "label": "Income Variance",
+        "category": "Earnings",
+        "risk_increasing": "High weekly income fluctuation (₹{val}) increased your predicted risk.",
+        "risk_reducing": "Low income variance of ₹{val} demonstrates high cash flow predictability.",
+    },
+    "incentive_share": {
+        "label": "Incentive Dependency",
+        "category": "Earnings",
+        "risk_increasing": "High dependency on incentives ({val}%) suggests unstable core base pay.",
+        "risk_reducing": "Stable core earnings with only {val}% dependency on platform incentives.",
+    },
+    "login_days_30d": {
+        "label": "System Login Frequency",
+        "category": "Consistency",
+        "risk_increasing": "Infrequent system logins ({val} days) suggest lower platform engagement.",
+        "risk_reducing": "Regular system logins for {val} days indicate high operational discipline.",
+    },
+    "avg_session_length": {
+        "label": "Work Session Duration",
+        "category": "Consistency",
+        "risk_increasing": "Shorter work sessions ({val} hrs avg) indicates fragmented and unstable activity.",
+        "risk_reducing": "Steady work sessions of {val} hours improved your consistency score.",
+    },
+    "inactivity_gap_days_max": {
+        "label": "Max Work Gap",
+        "category": "Consistency",
+        "risk_increasing": "Longest gap of {val} days between working sessions increased your risk profile.",
+        "risk_reducing": "High stability shown by a minimal maximum work gap of {val} days.",
+    },
+    "kyc_verified": {
+        "label": "Identity Verification",
+        "category": "Risk",
+        "risk_increasing": "Non-verified identity status significantly increased identity-related risk.",
+        "risk_reducing": "Verified KYC status improved overall trust and regulatory compliance.",
+    },
+    "account_suspensions_12m": {
+        "label": "Account Suspensions",
+        "category": "Risk",
+        "risk_increasing": "Previous account suspensions ({val}) significantly increased your risk profile.",
+        "risk_reducing": "Clean suspension record ({val}) improved your reliability and trust profile.",
+    },
+    "policy_violations_12m": {
+        "label": "Policy Violations",
+        "category": "Risk",
+        "risk_increasing": "History of {val} policy violations increased predicted behavioral risk.",
+        "risk_reducing": "Zero policy violations ({val}) demonstrated high professional compliance.",
+    },
+    "fraud_flag": {
+        "label": "Fraud Indicators",
+        "category": "Risk",
+        "risk_increasing": "Detected fraud indicators significantly increased your risk level.",
+        "risk_reducing": "No fraud indicators found, maintaining your standard risk profile.",
     },
     "activity_stability": {
-        "label": "Activity Stability",
-        "category": "Work Stability",
-        "risk_increasing": "Unstable work activity increased predicted repayment risk.",
-        "risk_reducing": "Stable work activity reduced predicted repayment risk.",
+        "label": "Operational Stability",
+        "category": "Derived",
+        "risk_increasing": "Lower stability score of {val} increased your predicted repayment risk.",
+        "risk_reducing": "High operational stability ({val}) improved work history confidence.",
     },
-    "wallet_txn_freq": {
-        "label": "Wallet Transaction Frequency",
-        "category": "Cash Flow",
-        "risk_increasing": "Lower wallet transaction activity weakened cash-flow confidence.",
-        "risk_reducing": "Regular wallet transaction activity improved cash-flow confidence.",
+    "earnings_per_hour": {
+        "label": "Hourly Efficiency",
+        "category": "Derived",
+        "risk_increasing": "Lower hourly efficiency of ₹{val} suggests reduced earning potential.",
+        "risk_reducing": "High hourly efficiency of ₹{val} improved your financial resilience score.",
     },
-    "inward_txn_freq": {
-        "label": "Incoming Transaction Frequency",
-        "category": "Cash Flow",
-        "risk_increasing": "Lower incoming transaction frequency increased predicted risk.",
-        "risk_reducing": "Frequent incoming transactions indicated stable cash flow.",
+    "volatility_ratio": {
+        "label": "Earnings Volatility",
+        "category": "Derived",
+        "risk_increasing": "High earnings volatility ({val}) increased your predicted repayment risk.",
+        "risk_reducing": "Stable earnings pattern (volatility: {val}) reduced your predicted risk.",
     },
-    "avg_income": {
-        "label": "Average Monthly Income",
-        "category": "Income",
-        "risk_increasing": "Lower average monthly income increased predicted repayment risk.",
-        "risk_reducing": "Higher average monthly income reduced predicted repayment risk.",
+    "reliability_score": {
+        "label": "Behavioral Reliability",
+        "category": "Derived",
+        "risk_increasing": "Lower reliability score ({val}) increased your predicted behavioral risk.",
+        "risk_reducing": "Strong behavioral reliability ({val}) improved your overall creditworthiness.",
     },
-    "income_volatility": {
-        "label": "Income Volatility",
-        "category": "Income Stability",
-        "risk_increasing": "High income fluctuation increased predicted repayment risk.",
-        "risk_reducing": "Lower income fluctuation improved income stability and reduced predicted risk.",
+    "discipline_score": {
+        "label": "Workplace Discipline",
+        "category": "Derived",
+        "risk_increasing": "Lower discipline score of {val} increased your predicted behavioral risk.",
+        "risk_reducing": "High workplace discipline score ({val}) improved repayment confidence.",
     },
-    "income_growth": {
-        "label": "Income Growth",
-        "category": "Income Stability",
-        "risk_increasing": "Weak or declining income growth increased predicted risk.",
-        "risk_reducing": "Positive income growth reduced predicted repayment risk.",
+    "financial_stress_ratio": {
+        "label": "Financial Stress Indicator",
+        "category": "Derived",
+        "risk_increasing": "High financial stress ratio of {val} increased your predicted risk.",
+        "risk_reducing": "Lower financial stress ratio ({val}) improved your overall risk profile.",
     },
-    "income_consistency_score": {
-        "label": "Income Consistency",
-        "category": "Income Stability",
-        "risk_increasing": "Lower income consistency increased predicted repayment risk.",
-        "risk_reducing": "Consistent income pattern reduced predicted repayment risk.",
-    },
-    "monthly_income_trend": {
-        "label": "Monthly Income Trend",
-        "category": "Income Stability",
-        "risk_increasing": "Declining or unstable income trend increased predicted risk.",
-        "risk_reducing": "Stable or improving income trend reduced predicted risk.",
-    },
-    "savings_ratio": {
-        "label": "Savings Ratio",
-        "category": "Financial Discipline",
-        "risk_increasing": "Low savings ratio indicated weaker financial buffer.",
-        "risk_reducing": "Healthy savings ratio indicated better financial discipline.",
-    },
-    "avg_balance": {
-        "label": "Average Balance",
-        "category": "Financial Resilience",
-        "risk_increasing": "Lower average balance indicated weaker liquidity.",
-        "risk_reducing": "Higher average balance indicated better liquidity and reduced predicted risk.",
-    },
-    "has_insurance": {
-        "label": "Insurance Coverage",
-        "category": "Risk Protection",
-        "risk_increasing": "Lack of insurance coverage increased financial vulnerability.",
-        "risk_reducing": "Insurance coverage reduced financial vulnerability.",
-    },
-    "emergency_buffer": {
-        "label": "Emergency Buffer",
-        "category": "Financial Resilience",
-        "risk_increasing": "Lack of emergency buffer increased predicted repayment risk.",
-        "risk_reducing": "Emergency buffer improved financial resilience and reduced predicted risk.",
-    },
-    "utility_delay_score": {
-        "label": "Utility Payment Delay",
-        "category": "Non-credit Payment Behavior",
-        "risk_increasing": "Utility payment delays increased predicted repayment risk.",
-        "risk_reducing": "Consistent utility payments reduced predicted repayment risk.",
-    },
-    "recent_missed_rent_3m": {
-        "label": "Recent Missed Rent",
-        "category": "Non-credit Payment Behavior",
-        "risk_increasing": "Recent missed rent payments increased predicted repayment risk.",
-        "risk_reducing": "No recent missed rent payments improved repayment confidence.",
-    },
-    "rent_consistency_ratio": {
-        "label": "Rent Consistency",
-        "category": "Non-credit Payment Behavior",
-        "risk_increasing": "Irregular rent payment behavior increased predicted risk.",
-        "risk_reducing": "Consistent rent payment behavior reduced predicted risk.",
-    },
-    "non_credit_payment_delay_score": {
-        "label": "Non-credit Payment Delay Score",
-        "category": "Non-credit Payment Behavior",
-        "risk_increasing": "Delays in non-credit payments increased predicted repayment risk.",
-        "risk_reducing": "Timely non-credit payments reduced predicted repayment risk.",
-    },
-    "data_completeness_score": {
-        "label": "Data Completeness",
-        "category": "Data Quality",
-        "risk_increasing": "Incomplete platform data reduced confidence and increased predicted risk.",
-        "risk_reducing": "More complete platform data improved confidence in the assessment.",
+    "earnings_consistency": {
+        "label": "Earnings Predictability",
+        "category": "Derived",
+        "risk_increasing": "Lower earnings predictability ({val}) increased your predicted risk.",
+        "risk_reducing": "Consistent earnings predictability ({val}) improved repayment confidence.",
     },
 }
 
@@ -214,8 +238,8 @@ def _build_factor(
         {
             "label": feature,
             "category": "Other",
-            "risk_increasing": f"{feature} increased predicted repayment risk.",
-            "risk_reducing": f"{feature} reduced predicted repayment risk.",
+            "risk_increasing": "{val} increased predicted repayment risk.",
+            "risk_reducing": "{val} reduced predicted repayment risk.",
         },
     )
 
@@ -224,14 +248,43 @@ def _build_factor(
         if direction == "risk_increasing"
         else "risk_reducing"
     )
+    
+    # Format the explanation with the real value
+    raw_explanation = metadata[explanation_key]
+    
+    # Handle percentage conversion for rates
+    display_val = feature_value
+    
+    integer_features = [
+        "active_days_30d", "online_hours_30d", "rating_count", 
+        "complaints_30d", "login_days_30d", "inactivity_gap_days_max",
+        "account_suspensions_12m", "policy_violations_12m"
+    ]
+    
+    if feature in integer_features:
+        display_val = int(round(display_val))
+    elif "rate" in feature or "share" in feature or "ratio" in feature:
+        if display_val <= 1.0:
+            display_val = round(display_val * 100, 1)
+        else:
+            display_val = round(display_val, 2)
+    elif "earnings" in feature or "payout" in feature:
+        display_val = f"{int(display_val):,}"
+    else:
+        display_val = round(display_val, 2) if isinstance(display_val, float) else display_val
+
+    try:
+        explanation = raw_explanation.format(val=display_val)
+    except (KeyError, ValueError):
+        explanation = raw_explanation
 
     return {
         "feature_key": feature,
         "label": metadata["label"],
         "category": metadata["category"],
-        "value": round(float(feature_value), 4),
+        "value": float(feature_value),
         "impact": round(float(shap_value), 6),
-        "explanation": metadata[explanation_key],
+        "explanation": explanation,
     }
 
 

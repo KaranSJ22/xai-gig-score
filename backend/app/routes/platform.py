@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, status, HTTPException
 from sqlalchemy.orm import Session
 
 from ..deps import get_db, require_borrower
@@ -50,6 +50,30 @@ def connect_platform(
     db.refresh(platform_record)
 
     return platform_record
+
+
+@router.post("/disconnect", status_code=status.HTTP_204_NO_CONTENT)
+def disconnect_platform(
+    payload: PlatformConnectRequest, # Reuse schema for name
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_borrower),
+):
+    platform_name = payload.platform_name.strip().lower()
+    
+    platform = (
+        db.query(PlatformData)
+        .filter(
+            PlatformData.user_id == current_user.id,
+            PlatformData.platform_name == platform_name,
+        )
+        .first()
+    )
+
+    if platform:
+        db.delete(platform)
+        db.commit()
+    
+    return None
 
 
 @router.get("/", response_model=list[PlatformResponse])

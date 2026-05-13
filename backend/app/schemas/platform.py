@@ -12,38 +12,43 @@ class PlatformResponse(BaseModel):
     user_id: int
     platform_name: str
 
-    # Basic borrower / platform context
-    age: float
-    platform_tenure: float
-    platform_count: float
+    # Work & Activity Profile
+    active_days_30d: float
+    online_hours_30d: float
+    avg_hours_per_active_day: float
+    acceptance_rate: float
+    cancellation_rate: float
+    peak_hour_share: float
 
-    # Work activity signals
-    avg_active_days: float
-    avg_hours: float
-    task_completion_rate: float
+    # Performance Profile
     avg_rating: float
+    rating_count: int
+    rating_std: float
+    complaints_30d: int
+
+    # Earnings Profile
+    gross_earnings_30d: float
+    net_payout_30d: float
+    weekly_earnings_std: float
+    incentive_share: float
+
+    # Consistency Profile
+    login_days_30d: int
+    avg_session_length: float
+    inactivity_gap_days_max: int
+
+    # Risk & Compliance Profile
+    kyc_verified: bool
+    account_suspensions_12m: int
+    policy_violations_12m: int
+    fraud_flag: bool
+
+    # Derived Features
     activity_stability: float
-
-    # Income and cash-flow signals
-    wallet_txn_freq: float
-    inward_txn_freq: float
-    avg_income: float
-    income_volatility: float
-    income_growth: float
-    income_consistency_score: float
-    monthly_income_trend: float
-
-    # Financial discipline / resilience signals
-    savings_ratio: float
-    avg_balance: float
-    has_insurance: bool
-    emergency_buffer: bool
-
-    # Non-credit payment behavior signals
-    utility_delay_score: float
-    recent_missed_rent_3m: float
-    rent_consistency_ratio: float
-    non_credit_payment_delay_score: float
+    earnings_per_hour: float
+    volatility_ratio: float
+    reliability_score: float
+    discipline_score: float
 
     # Data quality signal
     data_completeness_score: float

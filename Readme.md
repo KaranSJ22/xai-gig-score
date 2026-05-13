@@ -1,347 +1,110 @@
+# 🚀 GigScore: Institutional-Grade XAI Credit Intelligence
 
- XAI Gig Score
+**GigScore** is an explainable AI-based credit scoring ecosystem designed for gig workers and thin-file consumers. It bridges the gap between digital platform performance and institutional credit trust.
 
-An explainable AI-based credit scoring system for gig workers and thin-file consumers in India.
-
-The project predicts credit risk using gig worker-related financial and behavioral data. It includes a FastAPI backend, React frontend, PostgreSQL database, and ML pipeline with explainability support.
-
----
-
- Tech Stack
-
- Frontend
-- React
-- Vite
-- JavaScript
-- CSS
-- pnpm
-
- Backend
-- FastAPI
-- Python
-- PostgreSQL
-- SQLAlchemy
-- JWT Authentication
-
- Machine Learning
-- Python
-- Scikit-learn
-- SHAP
-- Pandas
-- NumPy
-
- Database / DevOps
-- PostgreSQL
-- Docker
-- Docker Compose
+![Version](https://img.shields.io/badge/version-1.2.0-black?style=for-the-badge)
+![Tech](https://img.shields.io/badge/Stack-FastAPI%20|%20React%20|%20PostgreSQL-blue?style=for-the-badge)
+![License](https://img.shields.io/badge/Intelligence-Explainable_AI-green?style=for-the-badge)
 
 ---
 
- Project Structure
+## 🌟 Key Features
+
+### 🧠 Intelligence Engine & XAI
+Our "XAI Engine" processes behavioral signals from connected gig platforms (Uber, Swiggy, Zomato) to predict creditworthiness. 
+- **Explainable Decisions**: Every score includes a **SHAP (SHapley Additive exPlanations)** breakdown, showing exactly which factors (active days, income stability, discipline) impacted the score.
+- **Confidence Scoring**: A statistical reliability metric (0.0 - 1.0) based on data density, providing lenders with transparency into the AI's certainty.
+
+### 👥 Dual-Portal Ecosystem
+- **Borrower Portal (Port 3000)**: A premium dashboard for workers to sync platforms, view their GigScore, understand their risk drivers, and apply for loans.
+- **Lender Console (Port 3001)**: An institutional interface for credit analysts to review applications, audit XAI metrics, and manage risk parameters.
+
+### 🛡️ Privacy & Control
+- **Dynamic Sync Control**: Borrowers can "Stop Sync" at any time, which immediately purges their behavioral data from the active signal cache.
+- **Identity Verification**: Integrated PAN protocol and RSA-4096 security for institutional-grade integrity.
+
+---
+
+## 🛠️ Technology Stack
+
+| Layer | Technologies |
+| :--- | :--- |
+| **Frontend** | React, Vite, TailwindCSS, Lucide Icons |
+| **Backend** | FastAPI (Python 3.10+), SQLAlchemy, JWT, Pydantic |
+| **Intelligence** | Scikit-Learn (Random Forest), SHAP, Pandas, NumPy |
+| **Storage** | PostgreSQL (Dockerized) |
+| **Security** | RSA-4096, BCrypt Hashing, Role-Based Access Control (RBAC) |
+
+---
+
+## 📂 Project Structure
 
 ```txt
 xai-gig-score/
-│
-├── backend/
+├── backend/                # FastAPI Application & XAI Engine Logic
 │   ├── app/
-│   │   ├── models/
-│   │   ├── routes/
-│   │   ├── schemas/
-│   │   ├── services/
-│   │   ├── utils/
-│   │   └── main.py
-│   └── requirements.txt
-│
+│   │   ├── ml/             # Serialized Model Artifacts (.pkl)
+│   │   ├── routes/         # API Endpoints (Auth, Lender, User)
+│   │   ├── services/       # Business Logic (Scoring, XAI, Feature Eng)
+│   │   └── main.py         # App Entry Point
 ├── frontend/
-│   └── front_m-main/
-│       ├── src/
-│       ├── package.json
-│       ├── pnpm-lock.yaml
-│       └── vite.config.ts
-│
-├── ml/
-│   ├── src/
-│   │   ├── train.py
-│   │   ├── evaluate.py
-│   │   ├── scoring.py
-│   │   ├── shap_explainer.py
-│   │   └── utils.py
-│   └── requirements.txt
-│
-├── docker/
-│   └── docker-compose.yml
-│
-├── .gitignore
-└── Readme.md
+│   ├── frontend_user/      # Borrower Dashboard (Port 3000)
+│   └── frontend_lender/    # Institutional Console (Port 3001)
+├── docker/                 # Infrastructure (PostgreSQL)
+└── ml/                     # ML Research & Notebooks
+```
 
-Installation and Setup
-Prerequisites
-Make sure these are installed on your system:
-Git
-Python 3.10 or above
-Node.js
-npm
-pnpm
-Docker Desktop
-Check versions:
-git --version
-python --version
-node -v
-npm -v
-docker --version
+---
 
-Check pnpm:
-pnpm -v
+## 🚀 Quick Start Guide
 
-If pnpm is not installed:
-npm install -g pnpm
-
-Check again:
-pnpm -v
-
-
-1. Clone the Repository
-git clone https://github.com/KaranSJ22/xai-gig-score.git
-cd xai-gig-score
-
-
-2. Database Setup Using Docker
-Start PostgreSQL using Docker Compose:
-docker compose -f docker/docker-compose.yml up -d
-
-Check running containers:
-docker ps
-
-To stop the database:
-docker compose -f docker/docker-compose.yml down
-
-To restart the database:
-docker compose -f docker/docker-compose.yml down
-docker compose -f docker/docker-compose.yml up -d
-
-
-3. Backend Setup
-Go to the backend folder:
-cd backend
-
-Create a virtual environment:
-python -m venv venv
-
-Activate the virtual environment.
-Windows PowerShell
-venv\Scripts\Activate.ps1
-
-Windows CMD
-venv\Scripts\activate.bat
-
-Linux / macOS
-source venv/bin/activate
-
-Install backend dependencies:
-pip install -r requirements.txt
-
-Create a .env file inside the backend folder:
-DATABASE_URL=postgresql://postgres:password@localhost:5432/gig_score_db
-SECRET_KEY=your_secret_key_here
-ALGORITHM=HS256
-ACCESS_TOKEN_EXPIRE_MINUTES=30
-
-Run the backend server:
-uvicorn app.main:app --reload
-
-Backend will run at:
-http://localhost:8000
-
-FastAPI Swagger documentation:
-http://localhost:8000/docs
-
-ReDoc documentation:
-http://localhost:8000/redoc
-
-
-4. Frontend Setup
-Open a new terminal from the project root.
-Go to the frontend folder:
-cd frontend/front_m-main
-
-Install frontend dependencies:
-pnpm install
-
-Create a .env file inside frontend/front_m-main:
-VITE_API_BASE_URL=http://localhost:8000
-
-Run the frontend:
-pnpm run dev
-
-Frontend will run at:
-http://localhost:3000
-
-If Vite starts on another port, use the URL shown in the terminal.
-
-5. Machine Learning Setup
-Open a new terminal from the project root.
-Go to the ML folder:
-cd ml
-
-Create a virtual environment:
-python -m venv venv
-
-Activate the virtual environment.
-Windows PowerShell
-venv\Scripts\Activate.ps1
-
-Windows CMD
-venv\Scripts\activate.bat
-
-Linux / macOS
-source venv/bin/activate
-
-Install ML dependencies:
-pip install -r requirements.txt
-
-Train the model:
-python src/train.py
-
-Evaluate the model:
-python src/evaluate.py
-
-Run scoring script:
-python src/scoring.py
-
-Generate SHAP explanations:
-python src/shap_explainer.py
-
-
-Running the Full Project
-Start services in this order.
-Terminal 1: Start Database
-From project root:
-docker compose -f docker/docker-compose.yml up -d
-
-
-Terminal 2: Start Backend
-cd backend
-venv\Scripts\Activate.ps1
-uvicorn app.main:app --reload
-
-For Linux/macOS:
-cd backend
-source venv/bin/activate
-uvicorn app.main:app --reload
-
-
-Terminal 3: Start Frontend
-cd frontend/front_m-main
-pnpm run dev
-
-Open the app:
-http://localhost:3000
-
-
-Useful Git Commands
-Check current status:
-git status
-
-Add all files:
-git add .
-
-Commit changes:
-git commit -m "your commit message"
-
-Add GitHub remote:
-git remote add origin https://github.com/KaranSJ22/xai-gig-score.git
-
-Push to GitHub:
-git branch -M main
-git push -u origin main
-
-For future pushes:
-git add .
-git commit -m "updated project"
-git push
-
-
-Important Files Not Included in Git
-The following files and folders are ignored using .gitignore:
-.env
-venv/
-__pycache__/
-*.pyc
-node_modules/
-dist/
-build/
-ml/data/
-ml/artifacts/
-backend/app/ml/
-*.pkl
-*.joblib
-*.csv
-
-These files are ignored because they may contain secrets, generated files, large datasets, or machine-specific dependencies.
-
-Environment Variables
-Backend .env
-Create this file inside the backend folder:
-DATABASE_URL=postgresql://postgres:password@localhost:5432/gig_score_db
-SECRET_KEY=your_secret_key_here
-ALGORITHM=HS256
-ACCESS_TOKEN_EXPIRE_MINUTES=30
-
-Frontend .env
-Create this file inside:
-frontend/front_m-main/.env
-
-Add:
-VITE_API_BASE_URL=http://localhost:8000
-
-
-Common Issues and Fixes
-pnpm is not recognized
-Install pnpm globally:
-npm install -g pnpm
-
-Then check:
-pnpm -v
-
-
-PowerShell blocks pnpm or venv activation
-Run this once in PowerShell:
-Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
-
-Close PowerShell, reopen it, and try again.
-
-Backend cannot connect to database
-Make sure Docker database is running:
-docker ps
-
-If not running:
-docker compose -f docker/docker-compose.yml up -d
-
-
-Port already in use
-For backend port 8000, stop the existing process or run on another port:
-uvicorn app.main:app --reload --port 8001
-
-For frontend, Vite will usually automatically select another port.
-
-API Documentation
-After starting the backend, open:
-http://localhost:8000/docs
-
-This provides an interactive API testing interface.
-
-Project Summary
-XAI Gig Score is a credit risk prediction system designed for gig workers and thin-file consumers. The system collects structured gig platform-related data, processes it through a machine learning model, generates a credit risk prediction, and provides explainable insights using SHAP-based explanations.
-The main goal is to improve credit access for workers who may not have traditional salary slips, stable employment records, or strong credit history.
-
-One thing I strongly recommend: rename your file from `Readme.md` to the standard GitHub format:
-
+### 1. Database Initialization
+Start the PostgreSQL environment using Docker Compose:
 ```bash
-git mv Readme.md README.md
+docker compose -f docker/docker-compose.yml up -d
+```
 
-Then commit:
-git add .
-git commit -m "add complete README setup guide"
-git push
+### 2. XAI Engine (Backend) Setup
+```bash
+cd backend
+python -m venv venv
+source venv/Scripts/activate  # Windows
+pip install -r requirements.txt
+uvicorn app.main:app --port 8001 --host 0.0.0.0 --reload
+```
 
+### 3. Portal Deployment
+Open two terminals for the dual portals:
 
+**Borrower Portal:**
+```bash
+cd frontend/frontend_user
+npm install
+npm run dev
+```
+
+**Lender Console:**
+```bash
+cd frontend/frontend_lender
+npm install
+npm run dev
+```
+
+---
+
+## 📈 XAI Engine Metadata (v1.2)
+- **Primary Algorithm**: Random Forest Ensemble
+- **Explainability Layer**: KernelExplainer (SHAP)
+- **Risk Range**: 300 (High Risk) - 850 (Institutional Trust)
+- **Confidence Metric**: Dynamic (Platform Density Based)
+
+---
+
+## 🛡️ Security & Compliance
+- **CORS Configuration**: Fully optimized for cross-origin portal orchestration.
+- **Audit Trail**: Every lender decision (Approval/Rejection) is timestamped and recorded with institutional justification.
+- **Data Minimization**: Enforces strict PII (Personally Identifiable Information) handling through PAN-only verification.
+
+---
+
+Designed with ❤️ for the Indian Gig Economy.

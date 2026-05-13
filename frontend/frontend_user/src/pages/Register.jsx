@@ -37,7 +37,7 @@ export default function RegisterPage() {
         <div className="flex flex-col items-center justify-center mb-10">
           <div className="flex items-center gap-2 mb-1">
             <Shield className="text-black" size={32} strokeWidth={2.5} />
-            <span className="text-2xl font-black tracking-tight">GigRisk</span>
+            <span className="text-2xl font-black tracking-tight">GigScore</span>
           </div>
           <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400">Institutional Trust</span>
         </div>
