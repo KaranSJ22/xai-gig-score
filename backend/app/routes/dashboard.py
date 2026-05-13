@@ -56,7 +56,7 @@ def get_dashboard(
         "connected_count": len(platforms),
         "platform_names": [p.platform_name for p in platforms],
         "avg_income": (
-            round(sum(p.avg_income for p in platforms) / len(platforms), 2)
+            round(sum(p.gross_earnings_30d for p in platforms) / len(platforms), 2)
             if platforms
             else 0.0
         ),
@@ -66,7 +66,7 @@ def get_dashboard(
             else 0.0
         ),
         "avg_active_days": (
-            round(sum(p.avg_active_days for p in platforms) / len(platforms), 2)
+            round(sum(p.active_days_30d for p in platforms) / len(platforms), 2)
             if platforms
             else 0.0
         ),

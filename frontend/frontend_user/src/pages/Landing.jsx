@@ -9,7 +9,7 @@ export default function LandingPage() {
         <div className="flex flex-col items-center justify-center mb-12">
           <div className="flex items-center gap-3 mb-2">
             <Shield className="text-black" size={40} strokeWidth={2.5} />
-            <span className="text-4xl font-black tracking-tight">GigRisk</span>
+            <span className="text-4xl font-black tracking-tight">GigScore</span>
           </div>
           <span className="text-xs font-bold uppercase tracking-[0.2em] text-gray-400">Institutional Trust Protocol</span>
         </div>

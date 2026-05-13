@@ -28,6 +28,8 @@ class LoanApplicationResponse(BaseModel):
 
     status: str
     decision_reason: Optional[str] = None
+    scheme_name: Optional[str] = None
+    lender_name: Optional[str] = None
 
     reviewed_at: Optional[datetime] = None
     created_at: datetime
@@ -64,6 +66,7 @@ class LoanApplicationDetailResponse(BaseModel):
     risk_increasing_factors: Optional[list[dict[str, Any]]] = None
     risk_reducing_factors: Optional[list[dict[str, Any]]] = None
     shap_values: Optional[dict[str, float]] = None
+    confidence_score: Optional[float] = None
 
     reviewed_at: Optional[datetime] = None
     created_at: datetime

@@ -35,7 +35,7 @@ export default function PredictPage() {
     <DashboardLayout>
       <div className="mb-10">
         <h1 className="text-3xl font-black text-gray-900 mb-1">Risk Calibration</h1>
-        <p className="text-gray-500 text-lg">Run our neural engine to calculate your real-time GigRisk Score™.</p>
+        <p className="text-gray-500 text-lg">Run our XAI engine to calculate your real-time GigScore.</p>
       </div>
 
       <div className="grid grid-cols-12 gap-8">
@@ -110,9 +110,9 @@ export default function PredictPage() {
                     <h4 className="text-sm font-black uppercase tracking-widest text-gray-900 underline decoration-black decoration-2">Positive Drivers</h4>
                   </div>
                   <div className="grid grid-cols-1 gap-4">
-                    {result.positive_factors.map((f, i) => (
+                    {(result.risk_reducing_factors || []).map((f, i) => (
                       <div key={i} className="bg-white p-4 rounded-xl border border-gray-100 text-xs font-bold text-gray-600 leading-relaxed shadow-sm">
-                        {f}
+                        {f.explanation}
                       </div>
                     ))}
                   </div>
@@ -124,9 +124,9 @@ export default function PredictPage() {
                     <h4 className="text-sm font-black uppercase tracking-widest text-red-600">Risk Constraints</h4>
                   </div>
                   <div className="grid grid-cols-1 gap-4">
-                    {result.negative_factors.map((f, i) => (
+                    {(result.risk_increasing_factors || []).map((f, i) => (
                       <div key={i} className="bg-red-50/30 p-4 rounded-xl border border-red-50 text-xs font-bold text-red-800 leading-relaxed">
-                        {f}
+                        {f.explanation}
                       </div>
                     ))}
                   </div>

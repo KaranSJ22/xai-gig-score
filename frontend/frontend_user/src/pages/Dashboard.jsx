@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { 
   CheckCircle, 
   TrendingDown, 
@@ -12,6 +13,7 @@ import { apiRequest } from '../lib/api';
 import DashboardLayout from '../components/DashboardLayout';
 
 export default function Dashboard() {
+  const navigate = useNavigate();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -54,7 +56,7 @@ export default function Dashboard() {
     );
   }
 
-  const { user, platform_summary, latest_prediction, loans, prediction_history } = data;
+  const { user, platform_summary, latest_prediction, loan_applications, prediction_history } = data;
 
   return (
     <DashboardLayout user={user}>
@@ -67,12 +69,20 @@ export default function Dashboard() {
         {/* Credit Score Card */}
         <div className="col-span-12 lg:col-span-4 bg-white rounded-2xl p-8 border border-gray-100 shadow-[0_4px_12px_rgba(0,0,0,0.03)] flex flex-col justify-between">
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2">GigRisk Credit Score</p>
-            <div className="flex items-baseline gap-2 mb-6">
-              <h3 className="text-6xl font-black text-black">
-                {latest_prediction?.credit_score ? Math.round(latest_prediction.credit_score) : '—'}
-              </h3>
-              <span className="text-sm font-semibold text-gray-400">/ 850</span>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2">GigScore</p>
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-baseline gap-2">
+                <h3 className="text-6xl font-black text-black">
+                  {latest_prediction?.credit_score ? Math.round(latest_prediction.credit_score) : '—'}
+                </h3>
+                <span className="text-sm font-semibold text-gray-400">/ 850</span>
+              </div>
+              <div className="flex flex-col items-end">
+                <span className="text-[9px] font-black uppercase tracking-widest text-gray-400">Model Confidence</span>
+                <span className="text-sm font-black text-green-600">
+                  {latest_prediction?.confidence_score ? (latest_prediction.confidence_score * 100).toFixed(1) : '—'}%
+                </span>
+              </div>
             </div>
           </div>
           <div>
@@ -149,11 +159,16 @@ export default function Dashboard() {
         <div className="col-span-12 lg:col-span-8">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-xl font-bold text-gray-900">Active Credit Lines</h3>
-            <button className="text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-black">View All</button>
+            <button 
+              onClick={() => navigate('/loans')}
+              className="text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-black"
+            >
+              View All
+            </button>
           </div>
           
           <div className="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm">
-            {loans?.length > 0 ? (
+            {loan_applications?.length > 0 ? (
               <table className="w-full text-left">
                 <thead>
                   <tr className="bg-gray-50 border-b border-gray-100">
@@ -164,16 +179,16 @@ export default function Dashboard() {
                   </tr>
                 </thead>
                 <tbody>
-                  {loans.slice(0, 5).map((loan, idx) => (
+                  {loan_applications.slice(0, 5).map((loan, idx) => (
                     <tr key={idx} className="border-b border-gray-50 last:border-0 hover:bg-gray-50/50 transition-colors">
                       <td className="py-5 px-6">
-                         <span className="font-bold text-gray-900">{loan.bank_name}</span>
+                         <span className="font-bold text-gray-900">{loan.lender_name}</span>
                       </td>
-                      <td className="py-5 px-6 font-bold text-gray-900">₹{loan.amount?.toLocaleString()}</td>
+                      <td className="py-5 px-6 font-bold text-gray-900">₹{loan.requested_amount?.toLocaleString()}</td>
                       <td className="py-5 px-6 text-sm text-gray-500">{new Date(loan.created_at).toLocaleDateString()}</td>
                       <td className="py-5 px-6 text-right">
                         <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-100 text-gray-900 text-[10px] font-bold uppercase tracking-wider">
-                          Active
+                          {loan.status}
                         </span>
                       </td>
                     </tr>
@@ -195,25 +210,25 @@ export default function Dashboard() {
              <div className="p-6 border-b border-gray-50 bg-gray-50/50">
                <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-4">Positive Drivers</p>
                <div className="space-y-3">
-                 {latest_prediction?.positive_factors?.map((factor, i) => (
+                 {latest_prediction?.risk_reducing_factors?.map((factor, i) => (
                    <div key={i} className="flex gap-2 text-xs text-gray-600 font-medium">
                      <span className="text-black">•</span>
-                     <span>{factor}</span>
+                     <span>{factor.explanation}</span>
                    </div>
                  ))}
-                 {!latest_prediction?.positive_factors?.length && <p className="text-xs text-gray-400">No positive factors detected.</p>}
+                 {!latest_prediction?.risk_reducing_factors?.length && <p className="text-xs text-gray-400">No positive factors detected.</p>}
                </div>
              </div>
              <div className="p-6">
                <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-4">Risk Constraints</p>
                <div className="space-y-3">
-                 {latest_prediction?.negative_factors?.map((factor, i) => (
+                 {latest_prediction?.risk_increasing_factors?.map((factor, i) => (
                    <div key={i} className="flex gap-2 text-xs text-red-500 font-medium">
                      <span className="text-red-500">•</span>
-                     <span>{factor}</span>
+                     <span>{factor.explanation}</span>
                    </div>
                  ))}
-                 {!latest_prediction?.negative_factors?.length && <p className="text-xs text-gray-400">No risk constraints detected.</p>}
+                 {!latest_prediction?.risk_increasing_factors?.length && <p className="text-xs text-gray-400">No risk constraints detected.</p>}
                </div>
              </div>
           </div>

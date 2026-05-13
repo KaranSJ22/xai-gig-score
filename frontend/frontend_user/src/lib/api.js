@@ -1,6 +1,6 @@
 import { getToken } from './auth';
 
-const BASE_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
+const BASE_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8001';
 
 export async function apiRequest(endpoint, options = {}) {
   const token = getToken();
@@ -24,6 +24,10 @@ export async function apiRequest(endpoint, options = {}) {
 
     if (response.status === 401) {
       window.location.href = '/login';
+    }
+
+    if (response.status === 204) {
+      return null;
     }
 
     const data = await response.json();

@@ -144,6 +144,7 @@ def get_lender_application_detail(
         "risk_increasing_factors": prediction.risk_increasing_factors if prediction else None,
         "risk_reducing_factors": prediction.risk_reducing_factors if prediction else None,
         "shap_values": prediction.shap_values if prediction else None,
+        "confidence_score": prediction.confidence_score if prediction else None,
         "reviewed_at": application.reviewed_at,
         "created_at": application.created_at,
         "updated_at": application.updated_at,

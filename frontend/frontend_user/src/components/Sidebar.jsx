@@ -29,7 +29,7 @@ export default function Sidebar() {
   return (
     <aside className="bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 fixed left-0 top-0 h-screen w-64 border-r border-gray-100 dark:border-gray-800 flex flex-col p-4 space-y-6 z-20">
       <div className="px-2">
-        <h1 className="text-xl font-black text-gray-900 dark:text-gray-100 mb-1">GigRisk</h1>
+        <h1 className="text-xl font-black text-gray-900 dark:text-gray-100 mb-1">GigScore</h1>
         <p className="text-gray-500 uppercase tracking-widest text-[10px] font-semibold">Institutional Trust</p>
       </div>
 
@@ -52,10 +52,18 @@ export default function Sidebar() {
       </nav>
 
       <div className="space-y-2 border-t border-gray-100 dark:border-gray-800 pt-4">
-        <button className="w-full flex items-center gap-3 text-gray-500 dark:text-gray-400 px-4 py-2.5 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-900/50 transition-all rounded-lg active:translate-x-1">
+        <NavLink 
+          to="/help"
+          className={({ isActive }) => cn(
+            "flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all duration-200 active:translate-x-1",
+            isActive 
+              ? "bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white font-bold" 
+              : "text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-900/50"
+          )}
+        >
           <HelpCircle size={20} />
           <span className="font-medium text-sm">Help Center</span>
-        </button>
+        </NavLink>
         <button 
           onClick={handleLogout}
           className="w-full flex items-center gap-3 text-gray-500 dark:text-gray-400 px-4 py-2.5 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-900/50 transition-all rounded-lg active:translate-x-1"

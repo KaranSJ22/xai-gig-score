@@ -25,6 +25,7 @@ from .routes.lender import router as lender_router
 from .routes.admin import router as admin_router
 
 
+# Create tables
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="GigScore Backend")
@@ -32,14 +33,7 @@ app = FastAPI(title="GigScore Backend")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-        "http://127.0.0.1:3000",
-
-        # lender frontend
-        "http://localhost:3001",
-        "http://127.0.0.1:3001",
-    ],
+    allow_origins=["http://localhost:3000", "http://localhost:3001", "http://localhost:3002", "http://127.0.0.1:3000", "http://127.0.0.1:3001", "http://127.0.0.1:3002"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

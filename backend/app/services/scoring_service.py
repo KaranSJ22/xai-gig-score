@@ -12,7 +12,8 @@ from .model_service import get_model_metadata, predict_default_probability
 
 def probability_to_credit_score(probability: float) -> float:
     probability = max(0.0, min(1.0, float(probability)))
-    return round(300 + (1.0 - probability) * 600, 2)
+    # New logic: Range 350 - 850
+    return round(850 - (probability * 500), 2)
 
 
 def credit_score_to_risk_level(score: float) -> str:
@@ -42,6 +43,9 @@ def generate_prediction_for_user(db: Session, user: User) -> Dict:
     risk_increasing_factors, risk_reducing_factors, shap_values = explain_prediction(features)
 
     model_metadata = get_model_metadata()
+    
+    # Calculate confidence score based on data density (num platforms)
+    confidence_score = min(0.98, 0.88 + (len(platforms) * 0.025))
 
     prediction = Prediction(
         user_id=user.id,
@@ -53,6 +57,7 @@ def generate_prediction_for_user(db: Session, user: User) -> Dict:
         shap_values=shap_values,
         model_name=model_metadata["model_name"],
         model_version=model_metadata["model_version"],
+        confidence_score=confidence_score,
     )
 
     db.add(prediction)
@@ -70,5 +75,6 @@ def generate_prediction_for_user(db: Session, user: User) -> Dict:
         "shap_values": prediction.shap_values,
         "model_name": prediction.model_name,
         "model_version": prediction.model_version,
+        "confidence_score": prediction.confidence_score,
         "created_at": prediction.created_at,
     }
