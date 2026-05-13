@@ -11,7 +11,8 @@ import {
   Search,
   User,
   X,
-  Info
+  Info,
+  HelpCircle
 } from 'lucide-react';
 import { removeToken } from '../lib/auth';
 

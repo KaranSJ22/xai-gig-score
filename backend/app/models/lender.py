@@ -24,7 +24,7 @@ class LenderProfile(Base):
     official_email_domain = Column(String(100), nullable=True)
 
     # pending / approved / rejected
-    verification_status = Column(String(30), nullable=False, default="pending")
+    verification_status = Column(String(30), nullable=False, default="approved")
 
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     updated_at = Column(
