@@ -69,7 +69,7 @@ def validate_dataset(df: pd.DataFrame) -> None:
     if df[TARGET_COLUMN].isnull().any():
         raise ValueError("Target column contains null values.")
 
-     unique_targets = sorted(df[TARGET_COLUMN].unique().tolist())
+    unique_targets = sorted(df[TARGET_COLUMN].unique().tolist())
     if any(v not in [0, 1] for v in unique_targets):
         raise ValueError(f"Target must be binary (0/1). Found: {unique_targets}")
 

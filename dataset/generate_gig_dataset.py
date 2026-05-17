@@ -16,11 +16,11 @@ def generate_gig_dataset():
     behavior_segments = []
     for r in risk_segments:
         if r == 'Low':
-            behavior_segments.append(np.random.choice(['High Performer', 'Average', 'Unstable'], p=[0.40, 0.55, 0.05]))
+            behavior_segments.append(np.random.choice(['High Performer', 'Average', 'Unstable'], p=[0.90, 0.10, 0.00]))
         elif r == 'Medium':
-            behavior_segments.append(np.random.choice(['High Performer', 'Average', 'Unstable'], p=[0.05, 0.65, 0.30]))
+            behavior_segments.append(np.random.choice(['High Performer', 'Average', 'Unstable'], p=[0.05, 0.85, 0.10]))
         else: # High
-            behavior_segments.append(np.random.choice(['High Performer', 'Average', 'Unstable'], p=[0.01, 0.19, 0.80]))
+            behavior_segments.append(np.random.choice(['High Performer', 'Average', 'Unstable'], p=[0.00, 0.05, 0.95]))
             
     df = pd.DataFrame({'risk_segment': risk_segments, 'behavior_segment': behavior_segments})
     df['Worker ID'] = range(1000, 1000 + NUM_ROWS)
@@ -216,9 +216,9 @@ def generate_gig_dataset():
     # G. TARGET VARIABLES
     def generate_default_prob(row):
         r = row['risk_segment']
-        if r == 'Low': return np.random.uniform(0.01, 0.15)
-        elif r == 'Medium': return np.random.uniform(0.15, 0.45)
-        else: return np.random.uniform(0.45, 0.90)
+        if r == 'Low': return np.random.uniform(0.00, 0.05)
+        elif r == 'Medium': return np.random.uniform(0.10, 0.30)
+        else: return np.random.uniform(0.60, 0.95)
 
     df['default_prob'] = df.apply(generate_default_prob, axis=1).round(2)
     df['default'] = np.random.binomial(1, df['default_prob'])
