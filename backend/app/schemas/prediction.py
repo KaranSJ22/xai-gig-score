@@ -1,10 +1,11 @@
 from datetime import datetime
 from typing import Any, Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class PredictionResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
     id: int
     user_id: int
 
@@ -21,8 +22,6 @@ class PredictionResponse(BaseModel):
 
     created_at: datetime
 
-    class Config:
-        from_attributes = True
 
 
 class PredictionResultResponse(BaseModel):

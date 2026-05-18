@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class PlatformConnectRequest(BaseModel):
@@ -8,6 +8,7 @@ class PlatformConnectRequest(BaseModel):
 
 
 class PlatformResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
     id: int
     user_id: int
     platform_name: str
@@ -55,5 +56,3 @@ class PlatformResponse(BaseModel):
 
     created_at: datetime
 
-    class Config:
-        from_attributes = True
