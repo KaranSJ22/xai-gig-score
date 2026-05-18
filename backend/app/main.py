@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+import os
+
 from .database import Base, engine
 from .models import (
     User,
@@ -25,8 +27,9 @@ from .routes.lender import router as lender_router
 from .routes.admin import router as admin_router
 
 
-# Create tables
-Base.metadata.create_all(bind=engine)
+# Create tables unless explicitly disabled (e.g., during tests)
+if os.getenv("DISABLE_DB_INIT") != "1":
+    Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="GigScore Backend")
 
