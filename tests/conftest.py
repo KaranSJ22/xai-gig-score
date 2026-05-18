@@ -2,14 +2,69 @@ from __future__ import annotations
 
 import os
 from dataclasses import dataclass
+from pathlib import Path
+import sys
 
 import pytest
+from sqlalchemy import create_engine
+from sqlalchemy.ext.compiler import compiles
+from sqlalchemy.orm import sessionmaker
 
 
-os.environ.setdefault("DATABASE_URL", "sqlite:///./tests/test.db")
+REPO_ROOT = Path(__file__).resolve().parents[1]
+BACKEND_ROOT = REPO_ROOT / "backend"
+TEST_DB_PATH = REPO_ROOT / "tests" / "test.db"
+if str(BACKEND_ROOT) not in sys.path:
+    sys.path.insert(0, str(BACKEND_ROOT))
+
+TEST_DB_PATH.parent.mkdir(parents=True, exist_ok=True)
+os.environ.setdefault("DATABASE_URL", f"sqlite:///{TEST_DB_PATH.as_posix()}")
 os.environ.setdefault("DISABLE_DB_INIT", "1")
 
-from app.services.feature_engineering import build_features
+from app.database import Base  # noqa: E402
+from app.deps import get_db  # noqa: E402
+from app.main import app  # noqa: E402
+from app.services.feature_engineering import build_features  # noqa: E402
+from sqlalchemy.dialects.postgresql import JSONB  # noqa: E402
+
+
+@compiles(JSONB, "sqlite")
+def _compile_jsonb_sqlite(_element, _compiler, **_kw):
+    return "JSON"
+
+
+_TEST_ENGINE = create_engine(
+    os.environ["DATABASE_URL"],
+    connect_args={"check_same_thread": False},
+)
+_TestSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=_TEST_ENGINE)
+
+
+@pytest.fixture(scope="session", autouse=True)
+def _create_test_schema():
+    """Create all tables once for the test session."""
+    Base.metadata.create_all(bind=_TEST_ENGINE)
+    yield
+    Base.metadata.drop_all(bind=_TEST_ENGINE)
+
+
+def _override_get_db():
+    db = _TestSessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+
+@pytest.fixture()
+def api_client():
+    """FastAPI client with DB dependency override for tests."""
+    app.dependency_overrides[get_db] = _override_get_db
+    from fastapi.testclient import TestClient
+
+    client = TestClient(app)
+    yield client
+    app.dependency_overrides.clear()
 
 
 @dataclass
