@@ -1,5 +1,6 @@
 from datetime import datetime
-from pydantic import BaseModel, Field
+
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class PanSubmitRequest(BaseModel):
@@ -7,11 +8,10 @@ class PanSubmitRequest(BaseModel):
 
 
 class PanResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
     id: int
     user_id: int
     pan_number: str
     is_verified: bool
     created_at: datetime
 
-    class Config:
-        from_attributes = True

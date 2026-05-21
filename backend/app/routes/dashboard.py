@@ -1,13 +1,12 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from ..deps import get_db
-from ..models.loan import Loan
+from ..deps import get_db, require_borrower
+from ..models.loan_application import LoanApplication
 from ..models.pan import PanDetails
 from ..models.platform import PlatformData
 from ..models.prediction import Prediction
 from ..models.user import User
-from .auth import get_current_user
 
 
 router = APIRouter(prefix="/dashboard", tags=["dashboard"])
@@ -16,7 +15,7 @@ router = APIRouter(prefix="/dashboard", tags=["dashboard"])
 @router.get("/")
 def get_dashboard(
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_borrower),
 ):
     pan_record = (
         db.query(PanDetails)
@@ -46,19 +45,36 @@ def get_dashboard(
         .all()
     )
 
-    loans = (
-        db.query(Loan)
-        .filter(Loan.user_id == current_user.id)
-        .order_by(Loan.created_at.desc())
+    loan_applications = (
+        db.query(LoanApplication)
+        .filter(LoanApplication.borrower_id == current_user.id)
+        .order_by(LoanApplication.created_at.desc())
         .all()
     )
 
     platform_summary = {
         "connected_count": len(platforms),
         "platform_names": [p.platform_name for p in platforms],
-        "avg_income": round(sum(p.avg_income for p in platforms) / len(platforms), 2) if platforms else 0.0,
-        "avg_rating": round(sum(p.avg_rating for p in platforms) / len(platforms), 2) if platforms else 0.0,
-        "avg_active_days": round(sum(p.avg_active_days for p in platforms) / len(platforms), 2) if platforms else 0.0,
+        "avg_income": (
+            round(sum(p.gross_earnings_30d for p in platforms) / len(platforms), 2)
+            if platforms
+            else 0.0
+        ),
+        "avg_rating": (
+            round(sum(p.avg_rating for p in platforms) / len(platforms), 2)
+            if platforms
+            else 0.0
+        ),
+        "avg_active_days": (
+            round(sum(p.active_days_30d for p in platforms) / len(platforms), 2)
+            if platforms
+            else 0.0
+        ),
+        "data_completeness_score": (
+            round(sum(p.data_completeness_score for p in platforms) / len(platforms), 3)
+            if platforms
+            else 0.0
+        ),
     }
 
     return {
@@ -66,19 +82,27 @@ def get_dashboard(
             "id": current_user.id,
             "name": current_user.name,
             "email": current_user.email,
+            "role": current_user.role,
         },
         "pan": {
             "submitted": pan_record is not None,
             "is_verified": pan_record.is_verified if pan_record else False,
+
+            # For borrower dashboard this is okay.
+            # For lender dashboard, never expose full PAN.
             "pan_number": pan_record.pan_number if pan_record else None,
         },
         "platform_summary": platform_summary,
         "latest_prediction": {
+            "id": latest_prediction.id,
             "credit_score": latest_prediction.credit_score,
             "default_probability": latest_prediction.default_probability,
             "risk_level": latest_prediction.risk_level,
-            "positive_factors": latest_prediction.positive_factors,
-            "negative_factors": latest_prediction.negative_factors,
+            "risk_increasing_factors": latest_prediction.risk_increasing_factors,
+            "risk_reducing_factors": latest_prediction.risk_reducing_factors,
+            "shap_values": latest_prediction.shap_values,
+            "model_name": latest_prediction.model_name,
+            "model_version": latest_prediction.model_version,
             "created_at": latest_prediction.created_at,
         } if latest_prediction else None,
         "prediction_history": [
@@ -91,14 +115,20 @@ def get_dashboard(
             }
             for p in prediction_history
         ],
-        "loans": [
+        "loan_applications": [
             {
-                "id": loan.id,
-                "bank_name": loan.bank_name,
-                "amount": loan.amount,
-                "status": loan.status,
-                "created_at": loan.created_at,
+                "id": application.id,
+                "scheme_id": application.scheme_id,
+                "scheme_name": application.scheme.scheme_name if application.scheme else None,
+                "lender_id": application.lender_id,
+                "lender_name": application.lender.name if application.lender else None,
+                "requested_amount": application.requested_amount,
+                "purpose": application.purpose,
+                "status": application.status,
+                "decision_reason": application.decision_reason,
+                "reviewed_at": application.reviewed_at,
+                "created_at": application.created_at,
             }
-            for loan in loans
+            for application in loan_applications
         ],
     }

@@ -43,4 +43,5 @@ backend/app/ml/
 .vscode/
 .idea/
 .DS_Store
-Thumbs.db
+Thumbs.dbgit add .
+git status

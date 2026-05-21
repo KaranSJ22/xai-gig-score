@@ -4,30 +4,34 @@ from ..models.platform import PlatformData
 
 
 FEATURE_COLUMNS = [
-    "age",
-    "platform_tenure",
-    "avg_active_days",
-    "avg_hours",
-    "task_completion_rate",
+    "active_days_30d",
+    "online_hours_30d",
+    "avg_hours_per_active_day",
+    "acceptance_rate",
+    "cancellation_rate",
+    "peak_hour_share",
     "avg_rating",
+    "rating_count",
+    "rating_std",
+    "complaints_30d",
+    "gross_earnings_30d",
+    "net_payout_30d",
+    "weekly_earnings_std",
+    "incentive_share",
+    "login_days_30d",
+    "avg_session_length",
+    "inactivity_gap_days_max",
+    "kyc_verified",
+    "account_suspensions_12m",
+    "policy_violations_12m",
+    "fraud_flag",
     "activity_stability",
-    "wallet_txn_freq",
-    "inward_txn_freq",
-    "avg_income",
-    "income_volatility",
-    "income_growth",
-    "savings_ratio",
-    "avg_balance",
-    "has_insurance",
-    "emergency_buffer",
-    "loan_utilization",
-    "fixed_emi_burden_ratio",
-    "credit_inquiries",
-    "delay_score",
-    "recent_payment_delays_90",
-    "utility_delay_score",
-    "recent_missed_rent_3m",
-    "rent_consistency_ratio",
+    "earnings_per_hour",
+    "volatility_ratio",
+    "reliability_score",
+    "discipline_score",
+    "financial_stress_ratio",
+    "earnings_consistency",
 ]
 
 
@@ -42,38 +46,46 @@ def build_features(platforms: List[PlatformData]) -> Dict[str, float]:
     count = len(platforms)
 
     def avg(attr: str) -> float:
-        return float(sum(getattr(p, attr) for p in platforms) / count)
+        return float(sum(float(getattr(p, attr)) for p in platforms) / count)
 
+    def avg_bool(attr: str) -> float:
+        return float(sum(_bool_to_float(bool(getattr(p, attr))) for p in platforms) / count)
+
+    def any_bool(attr: str) -> float:
+        return 1.0 if any(bool(getattr(p, attr)) for p in platforms) else 0.0
+
+    # Basic averages
     features = {
-        "age": avg("age"),
-        "platform_tenure": avg("platform_tenure"),
-        "avg_active_days": avg("avg_active_days"),
-        "avg_hours": avg("avg_hours"),
-        "task_completion_rate": avg("task_completion_rate"),
+        "active_days_30d": avg("active_days_30d"),
+        "online_hours_30d": avg("online_hours_30d"),
+        "avg_hours_per_active_day": avg("avg_hours_per_active_day"),
+        "acceptance_rate": avg("acceptance_rate"),
+        "cancellation_rate": avg("cancellation_rate"),
+        "peak_hour_share": avg("peak_hour_share"),
         "avg_rating": avg("avg_rating"),
+        "rating_count": int(avg("rating_count")),
+        "rating_std": avg("rating_std"),
+        "complaints_30d": int(avg("complaints_30d")),
+        "gross_earnings_30d": avg("gross_earnings_30d"),
+        "net_payout_30d": avg("net_payout_30d"),
+        "weekly_earnings_std": avg("weekly_earnings_std"),
+        "incentive_share": avg("incentive_share"),
+        "login_days_30d": int(avg("login_days_30d")),
+        "avg_session_length": avg("avg_session_length"),
+        "inactivity_gap_days_max": int(avg("inactivity_gap_days_max")),
+        "kyc_verified": avg_bool("kyc_verified"),
+        "account_suspensions_12m": int(avg("account_suspensions_12m")),
+        "policy_violations_12m": int(avg("policy_violations_12m")),
+        "fraud_flag": any_bool("fraud_flag"),
         "activity_stability": avg("activity_stability"),
-        "wallet_txn_freq": avg("wallet_txn_freq"),
-        "inward_txn_freq": avg("inward_txn_freq"),
-        "avg_income": avg("avg_income"),
-        "income_volatility": avg("income_volatility"),
-        "income_growth": avg("income_growth"),
-        "savings_ratio": avg("savings_ratio"),
-        "avg_balance": avg("avg_balance"),
-        "has_insurance": avg("_has_insurance_numeric"),
-        "emergency_buffer": avg("_emergency_buffer_numeric"),
-        "loan_utilization": avg("loan_utilization"),
-        "fixed_emi_burden_ratio": avg("fixed_emi_burden_ratio"),
-        "credit_inquiries": avg("credit_inquiries"),
-        "delay_score": avg("delay_score"),
-        "recent_payment_delays_90": avg("recent_payment_delays_90"),
-        "utility_delay_score": avg("utility_delay_score"),
-        "recent_missed_rent_3m": avg("recent_missed_rent_3m"),
-        "rent_consistency_ratio": avg("rent_consistency_ratio"),
+        "earnings_per_hour": avg("earnings_per_hour"),
+        "volatility_ratio": avg("volatility_ratio"),
+        "reliability_score": avg("reliability_score"),
+        "discipline_score": avg("discipline_score"),
     }
 
+    # Add derived features required by the new model
+    features["financial_stress_ratio"] = features["volatility_ratio"] / (features["net_payout_30d"] / 1000 + 1)
+    features["earnings_consistency"] = features["active_days_30d"] * (1 / (features["volatility_ratio"] + 1))
+
     return features
-
-
-def attach_numeric_flags(platform: PlatformData) -> None:
-    platform._has_insurance_numeric = _bool_to_float(platform.has_insurance)
-    platform._emergency_buffer_numeric = _bool_to_float(platform.emergency_buffer)
